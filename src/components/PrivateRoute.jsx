@@ -4,7 +4,7 @@ import { Route, Redirect } from 'react-router-dom';
 import authManager from '../core/auth-manager';
 
 const propTypes = {
-  component: PropTypes.element.isRequired,
+  component: PropTypes.func.isRequired,
 };
 
 const PrivateRoute = ({ component: Component, ...rest }) => (

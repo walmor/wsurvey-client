@@ -1,0 +1,9 @@
+.SignUp {  
+  top: 0;
+  transform: rotateY(180deg);
+  
+  @media (min-height:620px) {
+    top: 50%;
+    transform: rotateY(180deg) translateY(-50%);
+  }
+}

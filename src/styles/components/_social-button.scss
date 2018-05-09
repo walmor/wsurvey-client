@@ -1,0 +1,54 @@
+.SocialButton {
+  $icon-margin: 20px;
+  
+  color:hsl(0, 0%, 100%);
+  border-radius: 4px;
+  display: flex;
+  padding: 0px 5px;
+  text-align: center;
+  align-items:center;
+  justify-items: center;
+  
+  &:hover {
+    color:white;
+  }
+  
+  i {
+    font-size: 1.5em;
+    vertical-align: middle;
+    padding-left: $icon-margin;
+    flex: 0;
+    
+    &:before {
+      display: inline;
+      vertical-align: middle;
+    }
+    
+    &:after {
+      content: "";
+      width: 1px;
+      height: 26px;
+      margin-left: $icon-margin;
+      display: inline-block;
+      vertical-align: middle;
+    }
+  }
+  
+  span {
+    flex: 1 1 auto;
+    padding: 10px 0;
+  }
+}
+
+@mixin social-button($bkg-color) {  
+  background: $bkg-color;
+  
+  &:hover {
+    background: darken($bkg-color, 10%);
+    transition: all .3s cubic-bezier(0.645, 0.045, 0.355, 1);
+  }
+  
+  i:after {
+    background: lighten($bkg-color, $amount: 20%);
+  }
+}
