@@ -1,0 +1,53 @@
+.SocialButton {
+  align-items: center;
+  border-radius: 4px;
+  color: hsl(0, 0%, 100%);
+  display: flex;
+  justify-items: center;
+  padding: 0 5px;
+  text-align: center;
+
+  &:hover {
+    color: hsl(0, 0%, 100%);
+  }
+
+  span {
+    flex: 1 1 auto;
+    padding: 10px 0;
+  }
+}
+
+.SocialButtonIcon {
+  $icon-margin: 20px;
+  flex: 0;
+  font-size: 1.5em;
+  padding-left: $icon-margin;
+  vertical-align: middle;
+
+  &::before {
+    display: inline;
+    vertical-align: middle;
+  }
+
+  &::after {
+    content: '';
+    display: inline-block;
+    height: 26px;
+    margin-left: $icon-margin;
+    vertical-align: middle;
+    width: 1px;
+  }
+}
+
+@mixin social-button($bkg-color) {
+  background: $bkg-color;
+
+  &:hover {
+    background: darken($bkg-color, 10%);
+    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+  }
+
+  .SocialButtonIcon::after {
+    background: lighten($bkg-color, $amount: 20%);
+  }
+}

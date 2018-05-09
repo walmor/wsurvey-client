@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Route, Redirect } from 'react-router-dom';
-import authManager from '../core/auth-manager';
+import authManager from '../../core/auth-manager';
 
 const propTypes = {
   component: PropTypes.func.isRequired,

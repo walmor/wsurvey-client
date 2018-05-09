@@ -1,9 +1,0 @@
-.SignIn {
-  top: 0;
-  transform: rotateY(0deg);
-  
-  @media (min-height:500px) {
-    top: 50%;
-    transform: rotateY(0deg) translateY(-50%);
-  }
-}

@@ -1,13 +1,21 @@
+@import 'vendor/normalize';
 @import '~antd/dist/antd.css';
+
+@import 'base/utilities';
 
 @import 'pages/auth';
 @import 'layout/forms';
 
-@import 'components/link-button';
-@import 'components/signin';
-@import 'components/signin-form';
-@import 'components/signup';
-@import 'components/signup-form';
-@import 'components/social-button';
-@import 'components/facebook-button';
-@import 'components/google-button';
+// Lib components
+@import 'components/lib/link-button';
+@import 'components/lib/flipper';
+
+// Auth components
+@import 'components/auth/auth-flipper';
+@import 'components/auth/auth-container';
+@import 'components/auth/auth-title';
+@import 'components/auth/social-button';
+@import 'components/auth/facebook-button';
+@import 'components/auth/google-button';
+@import 'components/auth/auth-or-divider';
+@import 'components/auth/auth-footer';

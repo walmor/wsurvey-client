@@ -74,14 +74,19 @@ class SignUpForm extends React.Component {
           </FormField>
           {this.props.error && (
             <Alert
-              className="signup-error-msg"
+              className="u-marginBottom"
               type="error"
               message="Invalid email or password"
               showIcon
             />
           )}
           <Form.Item>
-            <Button type="primary" size="large" htmlType="submit" className="btn-signup">
+            <Button
+              type="primary"
+              size="large"
+              htmlType="submit"
+              className="u-inlineBlock u-sizeFill"
+            >
               Sign up
             </Button>
           </Form.Item>

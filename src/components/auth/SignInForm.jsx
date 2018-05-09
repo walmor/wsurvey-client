@@ -27,7 +27,7 @@ const defaultProps = {
 class SignInForm extends React.Component {
   componentDidUpdate() {
     if (this.props.resetFocus) {
-      this.txt.focus();
+      this.firstInput.focus();
     }
   }
   render() {
@@ -40,7 +40,7 @@ class SignInForm extends React.Component {
               size="large"
               autoFocus
               ref={(input) => {
-                this.txt = input;
+                this.firstInput = input;
               }}
               placeholder="Email"
             />
@@ -55,14 +55,19 @@ class SignInForm extends React.Component {
           </FormField>
           {this.props.error && (
             <Alert
-              className="signin-error-msg"
+              className="u-marginBottom"
               type="error"
               message="Invalid email or password"
               showIcon
             />
           )}
           <Form.Item>
-            <Button type="primary" size="large" htmlType="submit" className="btn-signin">
+            <Button
+              type="primary"
+              size="large"
+              htmlType="submit"
+              className="u-inlineBlock u-sizeFill"
+            >
               Sign in
             </Button>
           </Form.Item>
