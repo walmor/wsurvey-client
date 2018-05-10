@@ -13,14 +13,20 @@ const defaultProps = {
   options: null,
 };
 
-const FormField = ({ id, options, children }) => (
-  <FormContext.Consumer>
-    {(form) => {
-      const { getFieldDecorator } = form;
-      return <Form.Item>{getFieldDecorator(id, options)(children)}</Form.Item>;
-    }}
-  </FormContext.Consumer>
-);
+const FormField = (props) => {
+  const {
+    id, options, children, ...formItemProps
+  } = props;
+
+  return (
+    <FormContext.Consumer>
+      {(form) => {
+        const { getFieldDecorator } = form;
+        return <Form.Item {...formItemProps}>{getFieldDecorator(id, options)(children)}</Form.Item>;
+      }}
+    </FormContext.Consumer>
+  );
+};
 
 FormField.propTypes = propTypes;
 FormField.defaultProps = defaultProps;

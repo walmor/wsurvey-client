@@ -1,49 +1,174 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Form, Icon, Input, Button, Alert, Spin } from 'antd';
-import { AntForm, FormField } from '../forms';
-
-const nameOpts = {
-  rules: [{ required: true, message: 'Enter your name.' }],
-};
-
-const emailOpts = {
-  rules: [
-    { required: true, message: 'Enter your email.' },
-    { type: 'email', message: 'Enter a valid email.' },
-  ],
-};
-
-const passwordOpts = {
-  rules: [{ required: true, message: 'Enter your password.' }],
-};
-
-const confirmPasswordOpts = {
-  rules: [{ required: true, message: 'Confirm your password.' }],
-};
+import { Mutation } from 'react-apollo';
+import { Form, Icon, Input, Button, Spin } from 'antd';
+import { FormField, withAntdForm } from '../forms';
+import AuthError from './AuthError';
+import apolloClient from '../../core/apollo-client';
+import { SIGN_UP } from '../../graphql/mutations';
+import { IS_EMAIL_AVAILABLE } from '../../graphql/queries';
+import getGraphQLErrorMessage from '../../graphql/get-graphql-error-msg';
+import authManager from '../../core/auth-manager';
+import debounce from '../../core/debounce';
 
 const propTypes = {
   resetFocus: PropTypes.bool,
-  error: PropTypes.bool,
+  form: PropTypes.object.isRequired,
+  signUp: PropTypes.func.isRequired,
+  error: PropTypes.string,
+  loading: PropTypes.bool,
 };
 
 const defaultProps = {
   resetFocus: false,
-  error: false,
+  error: null,
+  loading: false,
 };
 
 class SignUpForm extends React.Component {
-  componentDidUpdate() {
-    if (this.props.resetFocus) {
+  constructor() {
+    super();
+    this.state = {
+      emailValidationError: false,
+    };
+    this.setFieldOptions();
+  }
+
+  componentWillUpdate(nextProps) {
+    if (!this.props.resetFocus && nextProps.resetFocus) {
       this.firstInput.focus();
     }
   }
 
+  setFieldOptions = () => {
+    const name = {
+      rules: [{ required: true, whitespace: true, message: 'Enter your name.' }],
+    };
+
+    const email = {
+      validateFirst: true,
+      rules: [
+        { required: true, message: 'Enter your email.' },
+        { type: 'email', message: 'Enter a valid email.' },
+        { validator: debounce(this.validateEmail, 1000) },
+      ],
+    };
+
+    const password = {
+      rules: [{ required: true, whitespace: true, message: 'Enter your password.' }],
+    };
+
+    const confirmPassword = {
+      rules: [
+        { required: true, message: 'Confirm your password.' },
+        { validator: debounce(this.validateConfirmPassword, 500) },
+      ],
+    };
+
+    this.fieldOpts = {
+      name,
+      email,
+      password,
+      confirmPassword,
+    };
+  };
+
+  disableCopyPaste = (field) => {
+    field.input.onpaste = () => false;
+    field.input.oncopy = () => false;
+  };
+
+  shouldShowEmailFeedback = () => {
+    const { form } = this.props;
+
+    if (form.isFieldValidating('signupEmail')) {
+      return true;
+    }
+
+    if (this.state.emailValidationError || form.getFieldError('signupEmail')) {
+      return false;
+    }
+
+    return form.isFieldTouched('signupEmail');
+  };
+
+  handlePasswordChange = () => {
+    const { form } = this.props;
+
+    if (form.isFieldTouched('signupConfirmPassword')) {
+      form.validateFields(['signupConfirmPassword'], { force: true });
+    }
+  };
+
+  validateConfirmPassword = (rule, value, callback) => {
+    const { getFieldValue } = this.props.form;
+    if (value && value !== getFieldValue('signupPassword')) {
+      callback('The passwords donʼt match.');
+    } else {
+      callback();
+    }
+  };
+
+  validateEmail = async (rule, email, callback) => {
+    try {
+      this.setState({ emailValidationError: false });
+
+      const { data } = await apolloClient.query({
+        query: IS_EMAIL_AVAILABLE,
+        fetchPolicy: 'no-cache',
+        variables: {
+          email,
+        },
+      });
+
+      if (data.isEmailAvailable) {
+        callback();
+      } else {
+        callback('This email is already in use.');
+      }
+    } catch (err) {
+      // when getting an network error don't show any
+      // validation error to the email field
+      this.setState({ emailValidationError: true });
+      callback();
+    }
+  };
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        this.signUp(values.signupName, values.signupEmail, values.signupPassword);
+      }
+    });
+  };
+
+  signUp = async (name, email, password) => {
+    try {
+      const { data } = await this.props.signUp({
+        variables: {
+          name,
+          email,
+          password,
+        },
+      });
+
+      const token = data.signup;
+      authManager.signin(token);
+    } catch (err) {
+      // do nothing, because the UI will be updated
+      // through the error property (this.props.error)
+    }
+  };
+
   render() {
+    const opts = this.fieldOpts;
+
     return (
-      <Spin spinning={false}>
-        <AntForm className="SignUpForm">
-          <FormField id="signup-name" options={nameOpts}>
+      <Spin spinning={this.props.loading}>
+        <Form className="SignUpForm" onSubmit={this.handleSubmit}>
+          <FormField id="signupName" options={opts.name}>
             <Input
               prefix={<Icon type="user" />}
               size="large"
@@ -53,33 +178,33 @@ class SignUpForm extends React.Component {
               placeholder="Name"
             />
           </FormField>
-          <FormField id="signup-email" options={emailOpts}>
+          <FormField
+            id="signupEmail"
+            options={opts.email}
+            hasFeedback={this.shouldShowEmailFeedback()}
+          >
             <Input prefix={<Icon type="mail" />} size="large" placeholder="Email" />
           </FormField>
-          <FormField id="signup-password" options={passwordOpts}>
+          <FormField id="signupPassword" options={opts.password}>
             <Input
               prefix={<Icon type="lock" />}
               size="large"
               type="password"
               placeholder="Password"
+              onChange={this.handlePasswordChange}
+              ref={this.disableCopyPaste}
             />
           </FormField>
-          <FormField id="signup-confirmPassword" options={confirmPasswordOpts}>
+          <FormField id="signupConfirmPassword" options={opts.confirmPassword}>
             <Input
               prefix={<Icon type="lock" />}
               size="large"
               type="password"
               placeholder="Confirm your password"
+              ref={this.disableCopyPaste}
             />
           </FormField>
-          {this.props.error && (
-            <Alert
-              className="u-marginBottom"
-              type="error"
-              message="Invalid email or password"
-              showIcon
-            />
-          )}
+          <AuthError message={this.props.error} />
           <Form.Item>
             <Button
               type="primary"
@@ -87,10 +212,10 @@ class SignUpForm extends React.Component {
               htmlType="submit"
               className="u-inlineBlock u-sizeFill"
             >
-              Sign up
+              {this.props.loading ? 'Signing up...' : 'Sign up'}
             </Button>
           </Form.Item>
-        </AntForm>
+        </Form>
       </Spin>
     );
   }
@@ -99,4 +224,21 @@ class SignUpForm extends React.Component {
 SignUpForm.propTypes = propTypes;
 SignUpForm.defaultProps = defaultProps;
 
-export default SignUpForm;
+const SignUpAntdForm = withAntdForm(SignUpForm);
+
+const SignUpFormWithMutation = props => (
+  <Mutation mutation={SIGN_UP}>
+    {(signUp, { error, loading }) => {
+      const allProps = {
+        signUp,
+        error: getGraphQLErrorMessage(error),
+        loading,
+        ...props,
+      };
+
+      return <SignUpAntdForm {...allProps} />;
+    }}
+  </Mutation>
+);
+
+export default SignUpFormWithMutation;

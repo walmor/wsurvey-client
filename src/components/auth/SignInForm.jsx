@@ -1,7 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Form, Icon, Input, Button, Alert, Spin } from 'antd';
-import { AntForm, FormField } from '../forms';
+import { Mutation } from 'react-apollo';
+import { Form, Icon, Input, Button, Spin } from 'antd';
+import { FormField, withAntdForm } from '../forms';
+import AuthError from './AuthError';
+import { SIGN_IN } from '../../graphql/mutations';
+import getGraphQLErrorMessage from '../../graphql/get-graphql-error-msg';
+import authManager from '../../core/auth-manager';
 
 const emailOpts = {
   rules: [
@@ -16,25 +21,57 @@ const passwordOpts = {
 
 const propTypes = {
   resetFocus: PropTypes.bool,
-  error: PropTypes.bool,
+  form: PropTypes.object.isRequired,
+  signIn: PropTypes.func.isRequired,
+  error: PropTypes.string,
+  loading: PropTypes.bool,
 };
 
 const defaultProps = {
   resetFocus: false,
-  error: false,
+  error: null,
+  loading: false,
 };
 
 class SignInForm extends React.Component {
-  componentDidUpdate() {
-    if (this.props.resetFocus) {
+  componentWillUpdate(nextProps) {
+    if (!this.props.resetFocus && nextProps.resetFocus) {
       this.firstInput.focus();
     }
   }
+
+  onFormSubmit = (e) => {
+    e.preventDefault();
+
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        this.signIn(values.signinEmail, values.signinPassword);
+      }
+    });
+  };
+
+  signIn = async (email, password) => {
+    try {
+      const { data } = await this.props.signIn({
+        variables: {
+          email,
+          password,
+        },
+      });
+
+      const token = data.signin;
+      authManager.signin(token);
+    } catch (err) {
+      // do nothing, because the UI will be updated
+      // through the error property (this.props.error)
+    }
+  };
+
   render() {
     return (
-      <Spin spinning={false}>
-        <AntForm className="SignInForm">
-          <FormField id="signin-email" options={emailOpts}>
+      <Spin spinning={this.props.loading}>
+        <Form className="SignInForm" onSubmit={this.onFormSubmit}>
+          <FormField id="signinEmail" options={emailOpts}>
             <Input
               prefix={<Icon type="mail" />}
               size="large"
@@ -45,7 +82,7 @@ class SignInForm extends React.Component {
               placeholder="Email"
             />
           </FormField>
-          <FormField id="signin-password" options={passwordOpts}>
+          <FormField id="signinPassword" options={passwordOpts}>
             <Input
               prefix={<Icon type="lock" />}
               size="large"
@@ -53,14 +90,7 @@ class SignInForm extends React.Component {
               placeholder="Password"
             />
           </FormField>
-          {this.props.error && (
-            <Alert
-              className="u-marginBottom"
-              type="error"
-              message="Invalid email or password"
-              showIcon
-            />
-          )}
+          <AuthError message={this.props.error} />
           <Form.Item>
             <Button
               type="primary"
@@ -68,10 +98,10 @@ class SignInForm extends React.Component {
               htmlType="submit"
               className="u-inlineBlock u-sizeFill"
             >
-              Sign in
+              {this.props.loading ? 'Signing in...' : 'Sign in'}
             </Button>
           </Form.Item>
-        </AntForm>
+        </Form>
       </Spin>
     );
   }
@@ -80,4 +110,21 @@ class SignInForm extends React.Component {
 SignInForm.propTypes = propTypes;
 SignInForm.defaultProps = defaultProps;
 
-export default SignInForm;
+const SignInAntdForm = withAntdForm(SignInForm);
+
+const SignInFormWithMutation = props => (
+  <Mutation mutation={SIGN_IN}>
+    {(signIn, { error, loading }) => {
+      const allProps = {
+        signIn,
+        error: getGraphQLErrorMessage(error),
+        loading,
+        ...props,
+      };
+
+      return <SignInAntdForm {...allProps} />;
+    }}
+  </Mutation>
+);
+
+export default SignInFormWithMutation;
