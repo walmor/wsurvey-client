@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import SocialButton from './SocialButton';
+import provider from '../../core/google-auth-provider';
 
 const GoogleButton = ({ action, className }) => (
   <SocialButton
     name="Google"
-    onClick={() => console.log('TODO: sigin with Google')}
+    onClick={() => provider.redirectToAuthPage({ action })}
     action={action}
     className={`GoogleButton ${className || ''}`}
   />

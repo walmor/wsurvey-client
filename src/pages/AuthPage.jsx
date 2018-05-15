@@ -16,13 +16,21 @@ class AuthPage extends React.Component {
     };
   }
 
-  componentDidMount() {
-    authManager.isSignedIn().then((isSignedIn) => {
-      this.setState({
-        loading: false,
-        isSignedIn,
+  componentWillMount() {
+    const { location } = this.props;
+    const error = location.state && location.state.error;
+
+    if (error) {
+      message.error(error);
+      this.setState({ loading: false });
+    } else {
+      authManager.isSignedIn().then((isSignedIn) => {
+        this.setState({
+          loading: false,
+          isSignedIn,
+        });
       });
-    });
+    }
   }
 
   render() {
@@ -34,16 +42,9 @@ class AuthPage extends React.Component {
       return <Redirect to="/admin" />;
     }
 
-    const { match, location } = this.props;
-    const error = location.state && location.state.error;
-
-    if (error) {
-      message.error(error);
-    }
-
     return (
       <div className="AuthPage">
-        <AuthFlipper startWith={match.params.action} />
+        <AuthFlipper startWith={this.props.match.params.action} />
       </div>
     );
   }

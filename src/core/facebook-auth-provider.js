@@ -2,18 +2,13 @@ import * as Facebook from 'fb-sdk-wrapper';
 import queryString from 'query-string';
 import config from './config';
 import CustomError from './custom-error';
+import getLocationOrigin from './location-origin';
 import apolloClient from './apollo-client';
 import { SIGN_IN_WITH_FACEBOOK } from '../graphql/mutations';
 import getGraphQLErrorMessage from '../graphql/get-graphql-error-msg';
 
 const APP_ID = config.facebookAppId;
 const AUTH_URL = 'https://www.facebook.com/v3.0/dialog/oauth';
-
-function getCurrentOrigin() {
-  return `${window.location.protocol}//${window.location.hostname}${
-    window.location.port ? `:${window.location.port}` : ''
-  }`;
-}
 
 async function signinWithFacebook(fbAccessToken) {
   try {
@@ -58,7 +53,7 @@ const facebookAuthManager = {
   },
 
   redirectToAuthPage({ action }) {
-    const redirectUri = `${getCurrentOrigin()}/auth-callback/${action}/facebook`;
+    const redirectUri = `${getLocationOrigin()}/auth-callback/${action}/facebook`;
 
     const qs = queryString.stringify({
       app_id: APP_ID,

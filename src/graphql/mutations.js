@@ -18,4 +18,10 @@ const SIGN_IN_WITH_FACEBOOK = gql`
   }
 `;
 
-export { SIGN_IN, SIGN_UP, SIGN_IN_WITH_FACEBOOK };
+const SIGN_IN_WITH_GOOGLE = gql`
+  mutation signinWithGoogle($idToken: String!) {
+    signinWithGoogle(idToken: $idToken)
+  }
+`;
+
+export { SIGN_IN, SIGN_UP, SIGN_IN_WITH_FACEBOOK, SIGN_IN_WITH_GOOGLE };

@@ -1,16 +1,25 @@
 import history from './history';
 import facebookAuthProvider from './facebook-auth-provider';
+import googleAuthProvider from './google-auth-provider';
 import CustomError from './custom-error';
 
 const AUTH_TOKEN_KEY = 'authToken';
 
 const authProviders = {
   facebook: facebookAuthProvider,
+  google: googleAuthProvider,
 };
 
 const authManager = {
-  async init() {
-    await facebookAuthProvider.init();
+  init() {
+    const promises = [];
+    const providers = Object.values(authProviders);
+
+    for (let i = 0; i < providers.length; i++) {
+      promises.push(providers[i].init());
+    }
+
+    return Promise.all(promises);
   },
 
   getToken() {
