@@ -21,8 +21,8 @@ const defaultProps = {
 const SignUp = ({ onSignInClick, resetFocus }) => (
   <AuthContainer className="SignUp">
     <AuthTitle>Sign Up</AuthTitle>
-    <FacebookButton type="signup" className="u-marginBottom" />
-    <GoogleButton type="signup" />
+    <FacebookButton action="signup" className="u-marginBottom u-sizeFill" />
+    <GoogleButton action="signup" className="u-sizeFill" />
     <AuthOrDivider />
     <SignUpForm resetFocus={resetFocus} />
     <AuthFooter>

@@ -3,21 +3,21 @@ import PropTypes from 'prop-types';
 import { Icon } from 'antd';
 
 const SocialButton = ({
-  name, icon, url, type, className,
+  name, icon, onClick, action, className,
 }) => (
-  <a href={url} className={`SocialButton ${className}` || ''}>
+  <button onClick={onClick} className={`SocialButton ${className}` || ''}>
     <Icon type={icon || name.toLowerCase()} className="SocialButtonIcon" />
     <span>
-      {type === 'signin' ? 'Sign in' : 'Sign up'} with {name}
+      {action === 'signin' ? 'Sign in' : 'Sign up'} with {name}
     </span>
-  </a>
+  </button>
 );
 
 SocialButton.propTypes = {
   name: PropTypes.string.isRequired,
   icon: PropTypes.string,
-  url: PropTypes.string.isRequired,
-  type: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired,
+  action: PropTypes.string.isRequired,
   className: PropTypes.string.isRequired,
 };
 

@@ -2,17 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import SocialButton from './SocialButton';
 
-const GoogleButton = ({ type, className }) => (
+const GoogleButton = ({ action, className }) => (
   <SocialButton
     name="Google"
-    url="https://www.google.com"
-    type={type}
+    onClick={() => console.log('TODO: sigin with Google')}
+    action={action}
     className={`GoogleButton ${className || ''}`}
   />
 );
 
 GoogleButton.propTypes = {
-  type: PropTypes.string.isRequired,
+  action: PropTypes.string.isRequired,
   className: PropTypes.string,
 };
 

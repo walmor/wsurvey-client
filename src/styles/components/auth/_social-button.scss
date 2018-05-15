@@ -1,7 +1,9 @@
 .SocialButton {
   align-items: center;
+  border: 0;
   border-radius: 4px;
   color: hsl(0, 0%, 100%);
+  cursor: pointer;
   display: flex;
   justify-items: center;
   padding: 0 5px;
@@ -13,7 +15,7 @@
 
   span {
     flex: 1 1 auto;
-    padding: 10px 0;
+    padding: 12px;
   }
 }
 

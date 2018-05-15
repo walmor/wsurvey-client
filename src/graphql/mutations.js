@@ -12,4 +12,10 @@ const SIGN_UP = gql`
   }
 `;
 
-export { SIGN_IN, SIGN_UP };
+const SIGN_IN_WITH_FACEBOOK = gql`
+  mutation signinWithFacebook($accessToken: String!) {
+    signinWithFacebook(accessToken: $accessToken)
+  }
+`;
+
+export { SIGN_IN, SIGN_UP, SIGN_IN_WITH_FACEBOOK };
