@@ -6,7 +6,7 @@ import provider from '../../core/google-auth-provider';
 const GoogleButton = ({ action, className }) => (
   <SocialButton
     name="Google"
-    onClick={() => provider.redirectToAuthPage({ action })}
+    provider={provider}
     action={action}
     className={`GoogleButton ${className || ''}`}
   />

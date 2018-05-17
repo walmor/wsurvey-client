@@ -8,6 +8,7 @@ import getGraphQLErrorMessage from '../graphql/get-graphql-error-msg';
 /* global gapi */
 
 let GoogleAuth = null;
+let initFailure = false;
 
 function loadGoogleApi() {
   return new Promise((resolve, reject) => {
@@ -15,6 +16,17 @@ function loadGoogleApi() {
       callback: resolve,
       onerror: reject,
     });
+  });
+}
+
+function initGoogleApi() {
+  return new Promise((resolve, reject) => {
+    gapi.client
+      .init({
+        clientId: config.googleClientId,
+        scope: 'profile email',
+      })
+      .then(resolve, reject);
   });
 }
 
@@ -37,20 +49,25 @@ async function signinWithGoogle(idToken) {
 
 const googleAuthManager = {
   async init() {
-    await loadGoogleApi();
-    await gapi.client.init({
-      clientId: config.googleClientId,
-      scope: 'profile email',
-    });
-
-    GoogleAuth = gapi.auth2.getAuthInstance();
+    try {
+      await loadGoogleApi();
+      await initGoogleApi();
+      GoogleAuth = gapi.auth2.getAuthInstance();
+    } catch (error) {
+      initFailure = true;
+    }
   },
 
   async isConnected() {
+    if (initFailure) return false;
     return GoogleAuth.isSignedIn.get();
   },
 
   async signin() {
+    if (!this.isConnected()) {
+      throw new CustomError('No user is connected.');
+    }
+
     const user = GoogleAuth.currentUser.get();
 
     const authResponse = await user.reloadAuthResponse();
@@ -63,6 +80,10 @@ const googleAuthManager = {
   },
 
   redirectToAuthPage({ action }) {
+    if (initFailure) {
+      throw new CustomError('Google authentication is not available at the moment.');
+    }
+
     const redirectUri = `${getLocationOrigin()}/auth-callback/${action}/google`;
 
     GoogleAuth.signIn({
@@ -72,6 +93,10 @@ const googleAuthManager = {
   },
 
   async handleAuthCallback() {
+    if (initFailure) {
+      throw new CustomError('Error processing the Google response. Try again.');
+    }
+
     const user = GoogleAuth.currentUser.get();
 
     if (!user.isSignedIn()) {

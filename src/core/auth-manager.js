@@ -25,6 +25,7 @@ const authManager = {
   getToken() {
     return localStorage.getItem(AUTH_TOKEN_KEY);
   },
+
   async isSignedIn() {
     if (this.getToken()) return true;
 
@@ -48,20 +49,25 @@ const authManager = {
 
     return false;
   },
+
   signin(token) {
     localStorage.setItem(AUTH_TOKEN_KEY, token);
     this.redirectToAdminPage();
   },
+
   signout() {
     localStorage.removeItem(AUTH_TOKEN_KEY);
     this.redirectToSignInPage();
   },
+
   redirectToSignInPage() {
     history.push('/signin');
   },
+
   redirectToAdminPage() {
     history.push('/admin');
   },
+
   async handleProviderCallback({
     providerName, action, qs, hash,
   }) {
@@ -69,7 +75,7 @@ const authManager = {
 
     if (!provider) {
       return {
-        redirectTo: '/signin',
+        pathname: '/signin',
       };
     }
 
@@ -79,7 +85,7 @@ const authManager = {
       localStorage.setItem(AUTH_TOKEN_KEY, accessToken);
 
       return {
-        redirectTo: '/admin',
+        pathname: '/admin',
       };
     } catch (error) {
       let errorMessage = 'An error has ocurred. Try again.';
@@ -88,8 +94,8 @@ const authManager = {
       }
 
       return {
-        redirectTo: `/${action}`,
-        redirectState: {
+        pathname: `/${action}`,
+        state: {
           error: errorMessage,
         },
       };

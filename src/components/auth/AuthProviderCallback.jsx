@@ -12,37 +12,31 @@ class AuthProviderCallback extends React.Component {
     };
   }
 
-  componentDidMount() {
-    const { providerName, action } = this.props.match.params;
-    authManager
-      .handleProviderCallback({
-        providerName,
-        action,
-        qs: this.props.location.search,
-        hash: this.props.location.hash,
-      })
-      .then(this.onCallbackHandled);
-  }
+  async componentWillMount() {
+    await authManager.init();
 
-  onCallbackHandled = ({ redirectTo, redirectState }) => {
+    const { providerName, action } = this.props.match.params;
+    const { search: qs, hash } = this.props.location;
+
+    const destination = await authManager.handleProviderCallback({
+      providerName,
+      action,
+      qs,
+      hash,
+    });
+
     this.setState({
       loading: false,
-      redirectTo,
-      redirectState,
+      destination,
     });
-  };
+  }
 
   render() {
-    const to = {
-      pathname: this.state.redirectTo,
-      state: this.state.redirectState,
-    };
-
     if (this.state.loading) {
       return <PageSpin />;
     }
 
-    return <Redirect to={to} />;
+    return <Redirect to={this.state.destination} />;
   }
 }
 

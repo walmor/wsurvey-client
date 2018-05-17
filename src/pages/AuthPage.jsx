@@ -16,7 +16,9 @@ class AuthPage extends React.Component {
     };
   }
 
-  componentWillMount() {
+  async componentWillMount() {
+    await authManager.init();
+
     const { location } = this.props;
     const error = location.state && location.state.error;
 
@@ -24,11 +26,11 @@ class AuthPage extends React.Component {
       message.error(error);
       this.setState({ loading: false });
     } else {
-      authManager.isSignedIn().then((isSignedIn) => {
-        this.setState({
-          loading: false,
-          isSignedIn,
-        });
+      const isSignedIn = await authManager.isSignedIn();
+
+      this.setState({
+        loading: false,
+        isSignedIn,
       });
     }
   }

@@ -6,9 +6,7 @@ import provider from '../../core/facebook-auth-provider';
 const FacebookButton = ({ action, className }) => (
   <SocialButton
     name="Facebook"
-    onClick={() => {
-      provider.redirectToAuthPage({ action });
-    }}
+    provider={provider}
     action={action}
     className={`FacebookButton ${className || ''}`}
   />
