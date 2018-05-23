@@ -58,7 +58,7 @@ const facebookAuthManager = {
   },
 
   async signin() {
-    if (!this.isConnected()) {
+    if (!(await this.isConnected())) {
       throw new CustomError('No user is connected.');
     }
 
@@ -71,6 +71,14 @@ const facebookAuthManager = {
     const fbAccessToken = authResponse.accessToken;
 
     return signinWithFacebook(fbAccessToken);
+  },
+
+  async signout() {
+    if (!(await this.isConnected())) {
+      return Promise.resolve();
+    }
+
+    return Facebook.logout();
   },
 
   redirectToAuthPage({ action }) {

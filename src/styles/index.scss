@@ -1,3 +1,5 @@
+@import 'abstracts/variables';
+
 @import 'vendor/normalize';
 @import '~antd/dist/antd.css';
 
@@ -21,3 +23,16 @@
 @import 'components/auth/auth-or-divider';
 @import 'components/auth/auth-error';
 @import 'components/auth/auth-footer';
+
+// Admin components
+@import 'components/admin/header/admin-header';
+@import 'components/admin/header/header-logo';
+@import 'components/admin/header/header-menu-link';
+@import 'components/admin/header/user-dropdown';
+@import 'components/admin/sider/admin-sider';
+@import 'components/admin/sider/sider-header';
+@import 'components/admin/footer/admin-footer';
+@import 'components/admin/content/content';
+@import 'components/admin/content/content-header';
+@import 'components/admin/content/content-panel';
+@import 'components/admin/dashboard';

@@ -10,14 +10,22 @@ const authProviders = {
   google: googleAuthProvider,
 };
 
+let initialized = false;
+
 const authManager = {
   init() {
+    if (initialized) {
+      return Promise.resolve();
+    }
+
     const promises = [];
     const providers = Object.values(authProviders);
 
     for (let i = 0; i < providers.length; i++) {
       promises.push(providers[i].init());
     }
+
+    initialized = true;
 
     return Promise.all(promises);
   },
@@ -55,8 +63,18 @@ const authManager = {
     this.redirectToAdminPage();
   },
 
-  signout() {
+  async signout() {
     localStorage.removeItem(AUTH_TOKEN_KEY);
+
+    const promises = [];
+    const providers = Object.values(authProviders);
+
+    for (let i = 0; i < providers.length; i++) {
+      promises.push(providers[i].signout());
+    }
+
+    await Promise.all(promises);
+
     this.redirectToSignInPage();
   },
 

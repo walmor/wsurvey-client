@@ -23,3 +23,14 @@
 .u-inlineBlock {
   display: inline-block !important;
 }
+
+.u-floatRight {
+  float: right !important;
+}
+
+.u-clearFix {
+  &::after {
+    clear: both;
+    content: '';
+  }
+}

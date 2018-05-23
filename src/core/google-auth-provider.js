@@ -79,6 +79,11 @@ const googleAuthManager = {
     return signinWithGoogle(authResponse.id_token);
   },
 
+  async signout() {
+    if (initFailure) return;
+    await GoogleAuth.signOut();
+  },
+
   redirectToAuthPage({ action }) {
     if (initFailure) {
       throw new CustomError('Google authentication is not available at the moment.');

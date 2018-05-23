@@ -20,7 +20,8 @@ class AuthPage extends React.Component {
     await authManager.init();
 
     const { location } = this.props;
-    const error = location.state && location.state.error;
+    const state = location.state || {};
+    const { error } = state;
 
     if (error) {
       message.error(error);
