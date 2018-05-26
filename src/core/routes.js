@@ -4,6 +4,8 @@ const routes = [
   createRoute('/admin/forms', 'Forms', 'forms'),
   createRoute('/admin/dashboard', 'Dashboard', 'dashboard'),
   createRoute('/admin', 'Home', 'home'),
+  createRoute('/signin', 'Sign In', 'signin'),
+  createRoute('/signup', 'Sign Up', 'signup'),
 ];
 
 function createRoute(pathPattern, title, menuKey) {
