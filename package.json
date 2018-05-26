@@ -12,6 +12,7 @@
     "apollo-link-http": "^1.5.4",
     "apollo-link-state": "^0.4.1",
     "fb-sdk-wrapper": "^0.3.0",
+    "ftellipsis": "^0.2.3",
     "graphql": "^0.13.2",
     "graphql-tag": "^2.9.2",
     "history": "^4.7.2",

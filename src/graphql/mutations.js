@@ -24,4 +24,12 @@ const SIGN_IN_WITH_GOOGLE = gql`
   }
 `;
 
-export { SIGN_IN, SIGN_UP, SIGN_IN_WITH_FACEBOOK, SIGN_IN_WITH_GOOGLE };
+const DELETE_FORM = gql`
+  mutation deleteForm($formId: ID!) {
+    deleteForm(formId: $formId) {
+      success
+    }
+  }
+`;
+
+export { SIGN_IN, SIGN_UP, SIGN_IN_WITH_FACEBOOK, SIGN_IN_WITH_GOOGLE, DELETE_FORM };

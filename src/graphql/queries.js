@@ -27,4 +27,19 @@ const GET_CURRENT_ROUTE = gql`
   }
 `;
 
-export { IS_EMAIL_AVAILABLE, VIEWER, GET_CURRENT_ROUTE };
+const FORMS = gql`
+  query forms($page: Int!, $pageSize: Int!, $search: String) {
+    forms(input: { page: $page, pageSize: $pageSize, search: $search }) {
+      totalCount
+      nodes {
+        id
+        title
+        description
+        createdAt
+        enabled
+      }
+    }
+  }
+`;
+
+export { IS_EMAIL_AVAILABLE, VIEWER, GET_CURRENT_ROUTE, FORMS };

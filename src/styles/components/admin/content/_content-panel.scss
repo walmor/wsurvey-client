@@ -3,4 +3,8 @@
   margin: 24px;
   min-height: 100%;
   padding: 24px;
+
+  @media (max-width: 575.98px) {
+    margin: 0;
+  }
 }

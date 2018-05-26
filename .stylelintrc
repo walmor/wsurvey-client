@@ -6,6 +6,7 @@
       {
         "message": "Class names should match the SUIT naming convention"
       }
-    ]
+    ],
+    "max-nesting-depth": 2
   }
 }
