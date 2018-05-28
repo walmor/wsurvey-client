@@ -49,7 +49,7 @@ class AdminPage extends React.Component {
               onSiderTriggerClick={this.toggleSider}
               collapsed={this.state.menuCollapsed}
             />
-            <Content className="Content">
+            <Content id="content" className="Content">
               <ContentHeader title="Forms" />
               <ContentPanel>
                 <Switch>

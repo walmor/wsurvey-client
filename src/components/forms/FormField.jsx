@@ -10,7 +10,7 @@ const propTypes = {
 };
 
 const defaultProps = {
-  options: null,
+  options: undefined,
 };
 
 const FormField = (props) => {

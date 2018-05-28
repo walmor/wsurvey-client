@@ -42,4 +42,24 @@ const FORMS = gql`
   }
 `;
 
-export { IS_EMAIL_AVAILABLE, VIEWER, GET_CURRENT_ROUTE, FORMS };
+const FORM = gql`
+  query form($formId: ID!) {
+    form(formId: $formId) {
+      id
+      title
+      description
+      enabled
+      createdAt
+      questions {
+        id
+        kind
+        title
+        description
+        required
+        options
+      }
+    }
+  }
+`;
+
+export { IS_EMAIL_AVAILABLE, VIEWER, GET_CURRENT_ROUTE, FORMS, FORM };

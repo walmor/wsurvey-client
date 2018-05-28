@@ -104,7 +104,7 @@ const SurveyForms = props => (
                   ]}
                 >
                   <List.Item.Meta
-                    title={<Link to={`forms/${form.id}`}>{form.title}</Link>}
+                    title={<Link to={`/admin/forms/${form.id}`}>{form.title}</Link>}
                     description={<ListItemDescription>{form.description}</ListItemDescription>}
                   />
                   <MediaQuery minWidth={bp.sm.minWidth}>
@@ -156,7 +156,7 @@ class SurveyFormsWithData extends React.Component {
   };
 
   onEdit = (id) => {
-    this.props.history.push(`forms/${id}`);
+    this.props.history.push(`/admin/forms/${id}`);
   };
 
   pushLocation = () => {

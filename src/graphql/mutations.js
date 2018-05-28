@@ -32,4 +32,28 @@ const DELETE_FORM = gql`
   }
 `;
 
-export { SIGN_IN, SIGN_UP, SIGN_IN_WITH_FACEBOOK, SIGN_IN_WITH_GOOGLE, DELETE_FORM };
+const CREATE_FORM = gql`
+  mutation createForm($form: FormInput!) {
+    createForm(form: $form) {
+      id
+    }
+  }
+`;
+
+const UPDATE_FORM = gql`
+  mutation updateForm($form: FormInput!) {
+    updateForm(form: $form) {
+      id
+    }
+  }
+`;
+
+export {
+  SIGN_IN,
+  SIGN_UP,
+  SIGN_IN_WITH_FACEBOOK,
+  SIGN_IN_WITH_GOOGLE,
+  DELETE_FORM,
+  CREATE_FORM,
+  UPDATE_FORM,
+};
