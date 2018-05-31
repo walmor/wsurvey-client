@@ -11,6 +11,7 @@ import { DELETE_FORM } from '../../graphql/mutations';
 import ListItemDescription from '../lib/ListItemDescription';
 import EditListActionButton from '../lib/EditListActionButton';
 import DeleteListActionButton from '../lib/DeleteListActionButton';
+import ContentPanel from './content/ContentPanel';
 
 const { Search } = Input;
 const PAGE_SIZE = 10;
@@ -62,73 +63,75 @@ const defaultProps = {
 };
 
 const SurveyForms = props => (
-  <div className="SurveyForms">
-    <div className="SurveyFormSearchPanel">
-      <div>
-        <Link to="forms/new">
-          <Button className="u-marginRight" type="primary">
-            Create new
-          </Button>
-        </Link>
+  <ContentPanel>
+    <div className="SurveyForms">
+      <div className="SurveyFormSearchPanel">
+        <div>
+          <Link to="forms/new">
+            <Button className="u-marginRight" type="primary">
+              Create new
+            </Button>
+          </Link>
+        </div>
+        <div>
+          <Search
+            className="SurveyFormSearchInput"
+            placeholder="Search..."
+            defaultValue={props.searchValue}
+            onSearch={props.onSearch}
+          />
+        </div>
       </div>
       <div>
-        <Search
-          className="SurveyFormSearchInput"
-          placeholder="Search..."
-          defaultValue={props.searchValue}
-          onSearch={props.onSearch}
-        />
-      </div>
-    </div>
-    <div>
-      <MediaQuery maxWidth={358}>
-        {(smallWidth) => {
-          const { loading, forms } = props;
-          const { pagination, onEdit, refetchForms } = props;
+        <MediaQuery maxWidth={358}>
+          {(smallWidth) => {
+            const { loading, forms } = props;
+            const { pagination, onEdit, refetchForms } = props;
 
-          pagination.size = smallWidth ? 'small' : '';
+            pagination.size = smallWidth ? 'small' : '';
 
-          return (
-            <List
-              size="large"
-              rowKey="id"
-              loading={loading}
-              locale={{ emptyText: 'No forms found' }}
-              pagination={pagination}
-              dataSource={forms}
-              renderItem={form => (
-                <List.Item
-                  actions={[
-                    <EditListActionButton onClick={() => onEdit(form.id)} />,
-                    <DeleteSurveyFormAction formId={form.id} refetchForms={refetchForms} />,
-                  ]}
-                >
-                  <List.Item.Meta
-                    title={<Link to={`/admin/forms/${form.id}`}>{form.title}</Link>}
-                    description={<ListItemDescription>{form.description}</ListItemDescription>}
-                  />
-                  <MediaQuery minWidth={bp.sm.minWidth}>
-                    <div className="SurveyFormsListContent">
-                      <div>
-                        <span>Created at</span>
-                        <div>{new Date(form.createdAt).toLocaleString()}</div>
-                      </div>
-                      <div>
-                        <span>Enabled</span>
+            return (
+              <List
+                size="large"
+                rowKey="id"
+                loading={loading}
+                locale={{ emptyText: 'No forms found' }}
+                pagination={pagination}
+                dataSource={forms}
+                renderItem={form => (
+                  <List.Item
+                    actions={[
+                      <EditListActionButton onClick={() => onEdit(form.id)} />,
+                      <DeleteSurveyFormAction formId={form.id} refetchForms={refetchForms} />,
+                    ]}
+                  >
+                    <List.Item.Meta
+                      title={<Link to={`/admin/forms/${form.id}`}>{form.title}</Link>}
+                      description={<ListItemDescription>{form.description}</ListItemDescription>}
+                    />
+                    <MediaQuery minWidth={bp.sm.minWidth}>
+                      <div className="SurveyFormsListContent">
                         <div>
-                          <Switch checked={form.enabled} size="small" disabled />
+                          <span>Created at</span>
+                          <div>{new Date(form.createdAt).toLocaleString()}</div>
+                        </div>
+                        <div>
+                          <span>Enabled</span>
+                          <div>
+                            <Switch checked={form.enabled} size="small" disabled />
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </MediaQuery>
-                </List.Item>
-              )}
-            />
-          );
-        }}
-      </MediaQuery>
+                    </MediaQuery>
+                  </List.Item>
+                )}
+              />
+            );
+          }}
+        </MediaQuery>
+      </div>
     </div>
-  </div>
+  </ContentPanel>
 );
 
 SurveyForms.propTypes = propTypes;
@@ -214,7 +217,7 @@ class SurveyFormsWithData extends React.Component {
 
           const props = {
             forms: forms.nodes || [],
-            loading: loading || networkStatus === 4,            
+            loading: loading || networkStatus === 4,
             searchValue: vars.search,
             onSearch: this.onSearch,
             onEdit: this.onEdit,
@@ -226,7 +229,7 @@ class SurveyFormsWithData extends React.Component {
               onChange: this.onPageChange,
             },
           };
-          
+
           if (error) {
             message.error('Error loading forms.');
           }

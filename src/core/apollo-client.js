@@ -7,6 +7,9 @@ import { setContext } from 'apollo-link-context';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import authManager from '../core/auth-manager';
 import config from './config';
+import createOmitTypenameLink from '../graphql/create-omit-typename-link';
+
+const omitTypenameLink = createOmitTypenameLink();
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
@@ -48,7 +51,15 @@ const stateLink = withClientState({
 
 const client = new ApolloClient({
   cache,
-  link: ApolloLink.from([stateLink, errorLink, authLink, httpLink]),
+  link: ApolloLink.from([omitTypenameLink, stateLink, errorLink, authLink, httpLink]),
+  defaultOptions: {
+    watchQuery: {
+      fetchPolicy: 'network-only',
+    },
+    query: {
+      fetchPolicy: 'network-only',
+    },
+  },
 });
 
 export default client;

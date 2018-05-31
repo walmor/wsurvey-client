@@ -30,7 +30,11 @@ class ListItemDescription extends React.Component {
 }
 
 ListItemDescription.propTypes = {
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node,
+};
+
+ListItemDescription.defaultProps = {
+  children: '',
 };
 
 export default ListItemDescription;

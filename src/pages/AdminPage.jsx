@@ -9,7 +9,6 @@ import SurveyForms from '../components/admin/SurveyForms';
 import CreateSurveyForm from '../components/admin/CreateSurveyForm';
 import EditSurveyForm from '../components/admin/EditSurveyForm';
 import ContentHeader from '../components/admin/content/ContentHeader';
-import ContentPanel from '../components/admin/content/ContentPanel';
 import Dashboard from '../components/admin/Dashboard';
 
 const { Content } = Layout;
@@ -51,15 +50,13 @@ class AdminPage extends React.Component {
             />
             <Content id="content" className="Content">
               <ContentHeader title="Forms" />
-              <ContentPanel>
-                <Switch>
-                  <Route path={`${match.url}/forms/new`} component={CreateSurveyForm} />
-                  <Route path={`${match.url}/forms/:formId`} component={EditSurveyForm} />
-                  <Route path={`${match.url}/forms`} component={SurveyForms} />
-                  <Route path={`${match.url}/dashboard`} component={Dashboard} />
-                  <Redirect to="/admin/forms" />
-                </Switch>
-              </ContentPanel>
+              <Switch>
+                <Route path={`${match.url}/forms/new`} component={CreateSurveyForm} />
+                <Route path={`${match.url}/forms/:formId`} component={EditSurveyForm} />
+                <Route path={`${match.url}/forms`} component={SurveyForms} />
+                <Route path={`${match.url}/dashboard`} component={Dashboard} />
+                <Redirect to="/admin/forms" />
+              </Switch>
             </Content>
             <AdminFooter />
           </Layout>
